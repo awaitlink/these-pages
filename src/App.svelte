@@ -3,25 +3,30 @@
 <script>
     import SiteCard from "./components/SiteCard.svelte";
 
+    const STORAGE_KEY = "sites";
+
     let editing = false;
     let sites = [];
 
-    function onHashChange() {
-        let fragment = location.hash.substr(1);
-        try {
-            sites = JSON.parse(atob(fragment));
-        } catch {}
+    function load() {
+        const storedValue = window.localStorage.getItem(STORAGE_KEY);
+        if (storedValue) {
+            return JSON.parse(storedValue);
+        } else {
+            return null;
+        }
     }
 
-    window.onhashchange = onHashChange;
-    onHashChange();
+    function save() {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
+    }
 
     function toggleEditMode() {
         editing = !editing;
 
         if (!editing) {
             sites = sites.filter((site) => !site.pendingDeletion);
-            window.location = "#" + btoa(JSON.stringify(sites));
+            save();
         }
     }
 
@@ -38,6 +43,17 @@
         });
 
         sites = sites;
+    }
+
+    try {
+        let storedValue = load();
+        if (storedValue) {
+            sites = storedValue;
+        } else {
+            save();
+        }
+    } catch (e) {
+        console.error(e);
     }
 </script>
 
