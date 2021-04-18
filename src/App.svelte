@@ -45,7 +45,6 @@
     <div class="buttons mb-5">
         <button
             class="button is-{editing ? 'success' : 'white'}"
-            class:hide-inactive={!editing}
             on:click={toggleEditMode}
         >
             <span class="icon is-small">
@@ -68,16 +67,3 @@
         {/each}
     </div>
 </div>
-
-<style>
-    button.hide-inactive {
-        opacity: 0.1;
-        transition: opacity 1s linear 1s;
-    }
-
-    button.hide-inactive:hover,
-    button.hide-inactive:focus {
-        opacity: 1;
-        transition: opacity 0.25s linear 0s;
-    }
-</style>
