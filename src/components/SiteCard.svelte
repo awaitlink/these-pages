@@ -5,6 +5,10 @@
     export let editable;
 
     import InputField from "./InputField.svelte";
+
+    function togglePendingDeletion() {
+        site.pendingDeletion = !site.pendingDeletion;
+    }
 </script>
 
 <div
@@ -16,7 +20,11 @@
         target="_top"
         class:disabled={editable}
     >
-        <div class="card" class:editable>
+        <div
+            class="card"
+            class:editable
+            class:has-background-danger-light={site.pendingDeletion}
+        >
             <div class="card-header-title">
                 {#if !editable}
                     {site.name}
@@ -37,6 +45,18 @@
                         bind:content={site.imageUrl}
                     />
                 </div>
+                <footer class="card-footer">
+                    <button
+                        class="button is-white card-footer-item"
+                        on:click={togglePendingDeletion}
+                    >
+                        <i
+                            class="fas fa-{site.pendingDeletion
+                                ? 'undo'
+                                : 'trash'}"
+                        />
+                    </button>
+                </footer>
             {:else if site.imageUrl}
                 <div class="card-image">
                     <figure class="image is-16by9">
