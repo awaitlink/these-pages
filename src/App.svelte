@@ -20,7 +20,7 @@
         editing = !editing;
 
         if (!editing) {
-            sites = sites.filter(site => !site.pendingDeletion);
+            sites = sites.filter((site) => !site.pendingDeletion);
             window.location = "#" + btoa(JSON.stringify(sites));
         }
     }
@@ -42,26 +42,23 @@
 </script>
 
 <div class="container is-fluid my-5">
-    <div class="field is-grouped mb-5">
-        <p class="control">
-            <button
-                class="button is-{editing ? 'success' : 'white'}"
-                on:click={toggleEditMode}
-            >
-                <span class="icon is-small">
-                    <i class="fas fa-lock{editing ? '-open' : ''}" />
-                </span>
-            </button>
-        </p>
+    <div class="buttons mb-5">
+        <button
+            class="button is-{editing ? 'success' : 'white'}"
+            class:hide-inactive={!editing}
+            on:click={toggleEditMode}
+        >
+            <span class="icon is-small">
+                <i class="fas fa-{editing ? 'save' : 'edit'}" />
+            </span>
+        </button>
 
         {#if editing}
-            <p class="control">
-                <button class="button is-light" on:click={addSite}>
-                    <span class="icon is-small">
-                        <i class="fas fa-plus" />
-                    </span>
-                </button>
-            </p>
+            <button class="button is-light" on:click={addSite}>
+                <span class="icon is-small">
+                    <i class="fas fa-plus" />
+                </span>
+            </button>
         {/if}
     </div>
 
@@ -71,3 +68,16 @@
         {/each}
     </div>
 </div>
+
+<style>
+    button.hide-inactive {
+        opacity: 0.1;
+        transition: opacity 1s linear 1s;
+    }
+
+    button.hide-inactive:hover,
+    button.hide-inactive:focus {
+        opacity: 1;
+        transition: opacity 0.25s linear 0s;
+    }
+</style>

@@ -73,8 +73,9 @@
         cursor: default;
     }
 
-    .card:not(.editable) {
+    .card {
         border: thick solid #ffffff00;
+        transition: border 0.25s;
     }
 
     .card:not(.editable):hover,
