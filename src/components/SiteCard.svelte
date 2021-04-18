@@ -21,13 +21,13 @@
         class:disabled={editable}
     >
         <div
-            class="card"
+            class="card is-unselectable"
             class:editable
             class:has-background-danger-light={site.pendingDeletion}
         >
             <div class="card-header-title">
                 {#if !editable}
-                    {site.name}
+                    <span class="is-clipped">{site.name}</span>
                 {:else}
                     <InputField bind:content={site.name} />
                 {/if}
@@ -81,5 +81,9 @@
     .card:not(.editable):hover,
     .card:not(.editable):focus {
         border: thick solid hsl(171, 100%, 41%); /* primary */
+    }
+
+    .is-clipped {
+        text-overflow: ellipsis;
     }
 </style>
