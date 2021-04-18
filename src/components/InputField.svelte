@@ -36,7 +36,11 @@
         {/if}
     </div>
     <div class="control">
-        <button class="button is-rounded" class:is-small={small} on:click={() => content = ""}>
+        <button
+            class="button is-rounded"
+            class:is-small={small}
+            on:click={() => (content = "")}
+        >
             <i class="fas fa-times" />
         </button>
     </div>
