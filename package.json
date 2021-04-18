@@ -4,8 +4,7 @@
         "serve": "parcel serve ./src/index.html",
         "build": "parcel build ./src/index.html",
         "generate-sw": "workbox generateSW workbox-config.js",
-        "clean": "rm -rf dist",
-        "ship": "yarn run clean && yarn run build && yarn run generate-sw"
+        "ship": "yarn run build && yarn run generate-sw"
     },
     "devDependencies": {
         "@babel/core": "^7.13.15",
