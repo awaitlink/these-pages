@@ -4,7 +4,7 @@
         "serve": "parcel serve ./src/index.html",
         "build": "parcel build ./src/index.html",
         "generate-sw": "workbox generateSW workbox-config.js",
-        "ship": "yarn run build && yarn run generate-sw",
+        "ship": "yarn run clean && yarn run build && yarn run generate-sw",
         "clean": "rm -rf .parcel-cache dist"
     },
     "devDependencies": {
