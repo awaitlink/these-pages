@@ -1,14 +1,21 @@
-<svelte:options tag="svelte-site-card"/>
+<svelte:options tag="svelte-site-card" />
 
 <script>
     export let site;
 </script>
 
-<div class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop is-one-fifth-widescreen">
+<div
+    class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop is-one-fifth-widescreen"
+>
     <a href={site.url} rel="noopener noreferrer nofollow" target="_top">
         <div class="card">
             <div class="card-header-title">
-                {site.name}
+                <span class="icon-text">
+                    <span class="icon">
+                        <i class="fas fa-link" />
+                    </span>
+                    <span>{site.name}</span>
+                </span>
             </div>
             <div class="card-image">
                 <figure class="image is-16by9">

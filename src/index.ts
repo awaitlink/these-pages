@@ -1,4 +1,6 @@
 import '~/node_modules/bulma/bulma.sass';
+import '~/node_modules/@fortawesome/fontawesome-free/css/all.css';
+
 import '@babel/polyfill';
 import App from './App.svelte';
 
