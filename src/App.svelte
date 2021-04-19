@@ -4,7 +4,7 @@
     import SiteCard from "./components/SiteCard.svelte";
     import InputField from "./components/InputField.svelte";
 
-    import _ from "lodash";
+    import { isNil } from "lodash";
 
     const SITES_STORAGE_KEY = "sites";
     const TITLE_STORAGE_KEY = "title";
@@ -16,7 +16,7 @@
     function loadAll() {
         function getOrInit(key, defaultValue) {
             const data = window.localStorage.getItem(key);
-            if (!_.isNil(data)) {
+            if (!isNil(data)) {
                 return data;
             } else {
                 saveAll();
