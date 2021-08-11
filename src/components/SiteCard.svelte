@@ -2,7 +2,10 @@
 
 <script>
     export let site;
-    export let editable;
+    export let globalEditMode;
+
+    let editable = false;
+    $: editable = globalEditMode && site.localEditMode;
 
     import InputField from "./InputField.svelte";
 
@@ -15,14 +18,14 @@
     class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop is-one-fifth-widescreen"
 >
     <a
-        href={editable ? null : site.url}
+        href={globalEditMode ? null : site.url}
         rel="noopener noreferrer nofollow"
         target="_top"
-        class:disabled={editable}
+        class:disabled={globalEditMode}
     >
         <div
             class="card is-unselectable"
-            class:editable
+            class:editable={globalEditMode}
             class:has-background-danger-light={site.pendingDeletion}
         >
             <div class="card-header-title">
@@ -45,9 +48,28 @@
                         bind:content={site.imageUrl}
                     />
                 </div>
+            {:else if site.imageUrl}
+                <div class="card-image">
+                    <figure class="image is-16by9">
+                        <img src={site.imageUrl} alt="Site" />
+                    </figure>
+                </div>
+            {/if}
+
+            {#if globalEditMode}
                 <footer class="card-footer">
+                    {#if !site.localEditMode && !site.pendingDeletion}
+                        <button
+                            class="button is-white card-footer-item has-text-link"
+                            on:click={() => (site.localEditMode = true)}
+                        >
+                            <i class="fas fa-edit" />
+                        </button>
+                    {/if}
+
                     <button
                         class="button is-white card-footer-item"
+                        class:has-text-danger={!site.pendingDeletion}
                         on:click={togglePendingDeletion}
                     >
                         <i
@@ -57,12 +79,6 @@
                         />
                     </button>
                 </footer>
-            {:else if site.imageUrl}
-                <div class="card-image">
-                    <figure class="image is-16by9">
-                        <img src={site.imageUrl} alt="Site" />
-                    </figure>
-                </div>
             {/if}
         </div>
     </a>
