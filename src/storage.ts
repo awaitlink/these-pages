@@ -1,14 +1,14 @@
 import _ from "lodash";
 
-enum SchemaVersion {
+export enum SchemaVersion {
     Initial = 0,
     CleanupUnnecessaryKeysAndEnsureUniqueIds = 1,
     SeparateKeysForSites = 2,
 }
 
-const CURRENT_SCHEMA_VERSION = SchemaVersion.SeparateKeysForSites;
+export const CURRENT_SCHEMA_VERSION = SchemaVersion.SeparateKeysForSites;
 
-const MIGRATIONS = {};
+const MIGRATIONS: { [key: number]: Function } = {};
 function registerMigration(version: SchemaVersion, migration: Function) {
     MIGRATIONS[version] = migration;
 }
@@ -18,7 +18,7 @@ registerMigration(SchemaVersion.CleanupUnnecessaryKeysAndEnsureUniqueIds, () => 
 
     let ids: number[] = [];
 
-    Storage.set(StorageKey.Sites, JSON.stringify(sites.map(site => {
+    Storage.set(StorageKey.Sites, JSON.stringify(sites.map((site: Site) => {
         let id = getGuranteedRandomIdWithExistingIds(ids);
         ids.push(id);
 
@@ -35,13 +35,13 @@ registerMigration(SchemaVersion.SeparateKeysForSites, () => {
     let sites = JSON.parse(Storage.getOrInit(StorageKey.Sites));
 
     for (let site of sites) {
-        Storage.set(Storage.siteKeyFromId(site.id), JSON.stringify(site));
+        Storage.set(Storage.siteKeyForId(site.id), JSON.stringify(site));
     }
 
-    Storage.set(StorageKey.Sites, JSON.stringify(sites.map(site => site.id)));
+    Storage.set(StorageKey.Sites, JSON.stringify(sites.map((site: Site) => site.id)));
 });
 
-enum StorageKey {
+export enum StorageKey {
     SchemaVersion = "version",
     Title = "title",
     Sites = "sites",
@@ -53,74 +53,60 @@ export type Site = {
     name: string,
     url: string,
     imageUrl: string,
-    pendingDeletion: boolean | undefined,
-    localEditMode: boolean | undefined,
+    pendingDeletion?: boolean,
+    localEditMode?: boolean,
 }
 
 export class Data {
     title: string;
     sites: Site[];
 
-    private constructor(title: string, sites: Site[]) {
+    constructor(title: string, sites: Site[]) {
         this.title = title;
         this.sites = sites;
     }
 
-    static fromStorage(): Data {
-        console.group(`Loading data`);
-
+    static performMigrationsUpTo(targetVersion: SchemaVersion) {
         let version = _.toInteger(Storage.getOrInit(StorageKey.SchemaVersion)) as SchemaVersion;
-        console.log(`Loaded version=${version}`);
 
         if (version > CURRENT_SCHEMA_VERSION) {
             throw new Error(`Unknown version=${version}`); // TODO: UI?
         }
 
-        console.group(`Checking for and applying any migrations if necessary`);
-        while (version !== CURRENT_SCHEMA_VERSION) {
+        console.log(`Checking for and applying any migrations if necessary: version=${version} target=${targetVersion}`);
+        while (version < targetVersion) {
             let nextVersion = (version + 1) as SchemaVersion;
 
-            console.group(`Applying migration: ${version} -> ${nextVersion} (${SchemaVersion[nextVersion]})`);
+            console.log(`Applying migration: ${version} -> ${nextVersion} (${SchemaVersion[nextVersion]})`);
             MIGRATIONS[nextVersion]();
-            console.log(`Migration done`);
             Storage.set(StorageKey.SchemaVersion, nextVersion.toString());
-            console.groupEnd();
 
             version = nextVersion;
         }
-        console.log(`Now at current version=${version}`);
-        console.groupEnd();
+        console.log(`Now at target version=${version}`);
+    }
+
+    static fromStorage(): Data {
+        Data.performMigrationsUpTo(CURRENT_SCHEMA_VERSION);
 
         let title = Storage.getOrInit(StorageKey.Title);
         let sites = JSON.parse(Storage.getOrInit(StorageKey.Sites));
-        sites = sites.map(siteId => JSON.parse(Storage.get(Storage.siteKeyFromId(siteId))));
+        sites = sites.map((siteId: number) => JSON.parse(Storage.get(Storage.siteKeyForId(siteId))!));
         let data = new Data(title, sites);
-
-        console.log(`Loading complete`);
-        console.groupEnd();
 
         return data;
     }
 
     commitAndSaveToStorage() {
-        console.group(`Saving all data, version=${CURRENT_SCHEMA_VERSION}`);
-
         let newSites: Site[] = [];
         for (let site of this.sites) {
             const id = site.id;
-            const key = Storage.siteKeyFromId(id);
+            const key = Storage.siteKeyForId(id);
 
             if (site.pendingDeletion) {
                 Storage.remove(key);
             } else {
-                let siteToSave = {
-                    id,
-                    name: site.name,
-                    url: site.url,
-                    imageUrl: site.imageUrl,
-                };
-
-                Storage.set(key, JSON.stringify(siteToSave));
+                Storage.set(key, JSON.stringify(_.pick(site, ["id", "name", "url", "imageUrl"])));
                 newSites.push(site);
             }
         }
@@ -129,9 +115,6 @@ export class Data {
 
         Storage.set(StorageKey.Title, this.title);
         Storage.set(StorageKey.SchemaVersion, CURRENT_SCHEMA_VERSION.toString());
-
-        console.log(`Saving complete`);
-        console.groupEnd();
 
         this.sites = newSites;
     }
@@ -142,7 +125,7 @@ export class Data {
 }
 
 export class Storage {
-    static siteKeyFromId(id: number) {
+    static siteKeyForId(id: number) {
         return StorageKey.SiteBase + id.toString() as StorageKey
     }
 
@@ -153,15 +136,13 @@ export class Storage {
             case StorageKey.Title:
                 return "These Pages";
             case StorageKey.Sites:
-                return "[]";
+                return JSON.stringify([]);
         }
 
         throw new Error(`Unsupported key="${key}" for defaultValue()`);
     }
 
     static get(key: StorageKey): string | undefined {
-        console.log(`Loading item key="${key}"`);
-
         let data = window.localStorage.getItem(key);
 
         if (data) {
@@ -191,23 +172,42 @@ export class Storage {
 
     static set(key: StorageKey, value: string) {
         window.localStorage.setItem(key, value);
-        console.log(`Saved item key="${key}"`);
     }
 
     static remove(key: StorageKey) {
         window.localStorage.removeItem(key);
-        console.log(`Removed item key="${key}"`);
+    }
+
+    static exportAllData(): string {
+        let keys = _.range(window.localStorage.length).map(n => window.localStorage.key(n)!);
+        let values = keys.map(key => window.localStorage.getItem(key));
+
+        return JSON.stringify(_.zipObject(keys, values));
+    }
+
+    static resetAndImportAllData(data: string) {
+        let kv = JSON.parse(data);
+
+        Storage.reset();
+
+        for (let key of _.keys(kv)) {
+            Storage.set(key as StorageKey, kv[key]);
+        }
+    }
+
+    static reset() {
+        window.localStorage.clear();
     }
 }
 
-function getGuranteedRandomIdWithExistingIds(ids: number[]): number {
-    let array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    let id = array[0];
+const MAX_RANDOM: number = _.toSafeInteger(Infinity);
+const random = () => _.random(MAX_RANDOM);
 
-    while (!_.every(ids, existingId => existingId !== id)) {
-        window.crypto.getRandomValues(array);
-        id = array[0];
+function getGuranteedRandomIdWithExistingIds(existingIds: number[]): number {
+    let id = random();
+
+    while (!_.every(existingIds, existingId => existingId !== id)) {
+        id = random();
     }
 
     return id;
