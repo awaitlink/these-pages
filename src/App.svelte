@@ -110,7 +110,7 @@
 
 <div class="modal" class:is-active={importExportModalVisible}>
     <div class="modal-background" on:click={toggleImportExportModal} />
-    <div class="modal-content has-text-centered">
+    <div class="modal-content">
         <div class="box">
             <div class="field">
                 <textarea
@@ -119,8 +119,8 @@
                     bind:value={importExportData}
                 />
             </div>
-            <div class="field">
-                <div class="control is-grouped">
+            <div class="field is-grouped">
+                <p class="control">
                     <button
                         class="button is-rounded is-light"
                         on:click={toggleImportExportModal}
@@ -129,6 +129,9 @@
                             <i class="fas fa-undo" />
                         </span>
                     </button>
+                </p>
+                <p class="control is-expanded" />
+                <p class="control">
                     <button
                         class="button is-rounded is-danger"
                         on:click={importData}
@@ -137,7 +140,7 @@
                             <i class="fas fa-save" />
                         </span>
                     </button>
-                </div>
+                </p>
             </div>
         </div>
     </div>
