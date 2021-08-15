@@ -15,7 +15,7 @@
 </script>
 
 <div
-    class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop is-one-fifth-widescreen"
+    class="column is-half-mobile is-one-third-tablet is-one-quarter-desktop is-one-fifth-widescreen is-2-fullhd"
 >
     <a
         href={globalEditMode ? null : site.url}
