@@ -11,6 +11,6 @@ new App({
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/' + 'sw.js');
+    navigator.serviceWorker.register(location.origin + '/sw.js');
   });
 }
