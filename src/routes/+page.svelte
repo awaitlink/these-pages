@@ -1,10 +1,10 @@
 <svelte:options tag="svelte-app" />
 
-<script>
-    import SiteCard from "./components/SiteCard.svelte";
-    import InputField from "./components/InputField.svelte";
+<script lang="ts">
+    import SiteCard from "../SiteCard.svelte";
+    import InputField from "../InputField.svelte";
 
-    import { Data, Storage } from "./storage";
+    import { Data, Storage } from "$lib/storage";
 
     let globalEditMode = false;
     let data = Data.fromStorage();
@@ -53,6 +53,10 @@
 
     $: document.title = data.title;
 </script>
+
+<svelte:head>
+    <title>These Pages</title>
+</svelte:head>
 
 <div class="container is-fluid my-5">
     <div class="field is-grouped is-grouped-multiline is-grouped-right mb-5">

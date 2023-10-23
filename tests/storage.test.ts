@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import { Storage, StorageKey, Site, CURRENT_SCHEMA_VERSION, SchemaVersion, Data } from "../src/storage";
+import { Storage, StorageKey, CURRENT_SCHEMA_VERSION, SchemaVersion, Data } from "../src/lib/storage";
+import type { Site } from "../src/lib/storage";
 
 describe("Data", () => {
     describe("performMigrationsUpTo", () => {

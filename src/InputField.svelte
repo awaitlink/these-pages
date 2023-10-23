@@ -1,6 +1,6 @@
 <svelte:options tag="svelte-input-field" />
 
-<script>
+<script lang="ts">
     export let small;
     export let icon;
     export let content;

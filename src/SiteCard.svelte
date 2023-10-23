@@ -1,6 +1,6 @@
 <svelte:options tag="svelte-site-card" />
 
-<script>
+<script lang="ts">
     export let site;
     export let globalEditMode;
 
