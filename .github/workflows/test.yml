@@ -5,9 +5,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install yarn
+      - name: Enable corepack
         run: corepack enable
-      - name: Install dependencies
+      - name: Install yarn & dependencies
         run: yarn
       - name: Test
         run: yarn test --coverage
