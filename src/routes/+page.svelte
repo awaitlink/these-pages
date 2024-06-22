@@ -1,4 +1,4 @@
-<svelte:options tag="svelte-app" />
+<svelte:options />
 
 <script lang="ts">
     import SiteCard from "../SiteCard.svelte";
@@ -75,7 +75,11 @@
                 </button>
             </p>
             <p class="control">
-                <InputField bind:content={data.title} />
+                <InputField
+                    bind:content={data.title}
+                    small={false}
+                    icon={null}
+                />
             </p>
             <p class="control is-expanded" />
             <p class="control">

@@ -1,19 +1,19 @@
-<svelte:options tag="svelte-input-field" />
+<svelte:options />
 
 <script lang="ts">
     export let small;
     export let icon;
-    export let content;
+    export let content: string;
 
-    function handlePaste(event) {
-        for (let item of event.clipboardData.items) {
+    function handlePaste(event: ClipboardEvent) {
+        for (let item of event.clipboardData?.items ?? []) {
             if (item.kind == "file" && item.type.startsWith("image/")) {
                 var imageFile = item.getAsFile();
                 var fileReader = new FileReader();
                 fileReader.onloadend = function () {
-                    content = fileReader.result;
+                    content = fileReader.result?.toString() ?? "";
                 };
-                fileReader.readAsDataURL(imageFile);
+                fileReader.readAsDataURL(imageFile ?? new Blob());
                 break;
             }
         }
@@ -41,7 +41,9 @@
             class:is-small={small}
             on:click={() => (content = "")}
         >
-            <i class="fas fa-times" />
+            <span class="icon" class:is-small={small}>
+                <i class="fas fa-times" />
+            </span>
         </button>
     </div>
 </div>

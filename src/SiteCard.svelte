@@ -1,7 +1,9 @@
-<svelte:options tag="svelte-site-card" />
+<svelte:options />
 
 <script lang="ts">
-    export let site;
+    import { Site } from "$lib/storage";
+
+    export let site: Site;
     export let globalEditMode;
 
     let editable = false;
@@ -32,7 +34,11 @@
                 {#if !editable}
                     <span class="is-clipped">{site.name}</span>
                 {:else}
-                    <InputField bind:content={site.name} />
+                    <InputField
+                        bind:content={site.name}
+                        small={false}
+                        icon={null}
+                    />
                 {/if}
             </div>
             {#if editable}
