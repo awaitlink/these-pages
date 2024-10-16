@@ -23,7 +23,7 @@
 <div class="field has-addons">
     <div class="control" class:has-icons-left={icon}>
         <input
-            class="input is-rounded is-light"
+            class="input is-rounded"
             class:is-small={small}
             type="text"
             bind:value={content}
@@ -37,7 +37,7 @@
     </div>
     <div class="control">
         <button
-            class="button is-rounded is-light"
+            class="button is-rounded"
             class:is-small={small}
             on:click={() => (content = "")}
         >

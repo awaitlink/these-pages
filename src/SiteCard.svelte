@@ -66,7 +66,7 @@
                 <footer class="card-footer">
                     {#if !site.localEditMode && !site.pendingDeletion}
                         <button
-                            class="button is-white card-footer-item has-text-link"
+                            class="button card-footer-item has-text-link"
                             on:click={() => (site.localEditMode = true)}
                         >
                             <i class="fas fa-edit" />
@@ -74,7 +74,7 @@
                     {/if}
 
                     <button
-                        class="button is-white card-footer-item"
+                        class="button card-footer-item"
                         class:has-text-danger={!site.pendingDeletion}
                         on:click={togglePendingDeletion}
                     >

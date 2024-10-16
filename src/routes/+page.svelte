@@ -63,7 +63,7 @@
         {#if globalEditMode}
             <p class="control">
                 <button
-                    class="button is-rounded is-light"
+                    class="button is-rounded"
                     on:click={toggleImportExportModal}
                 >
                     <span class="icon is-small">
@@ -83,7 +83,7 @@
             </p>
             <p class="control is-expanded" />
             <p class="control">
-                <button class="button is-rounded is-light" on:click={addSite}>
+                <button class="button is-rounded" on:click={addSite}>
                     <span class="icon is-small">
                         <i class="fas fa-plus" />
                     </span>
@@ -94,7 +94,6 @@
             <button
                 class="button is-rounded"
                 class:is-link={!globalEditMode && data.sites.length === 0}
-                class:is-white={!globalEditMode && data.sites.length > 0}
                 class:is-success={globalEditMode}
                 on:click={toggleGlobalEditMode}
             >
@@ -130,7 +129,7 @@
             <div class="field is-grouped">
                 <p class="control">
                     <button
-                        class="button is-rounded is-light"
+                        class="button is-rounded"
                         on:click={toggleImportExportModal}
                     >
                         <span class="icon is-small">
