@@ -1,7 +1,7 @@
 <svelte:options />
 
 <script lang="ts">
-    import { Site } from "$lib/storage";
+    import type { Site } from "$lib/storage";
 
     export let site: Site;
     export let globalEditMode;
